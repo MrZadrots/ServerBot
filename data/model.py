@@ -1,7 +1,5 @@
-from flask_sqlalchemy import SQLAlchemy
+from app import app, db
 from datetime import datetime
-
-from main import db
 
 
 class Post(db.Model):
@@ -14,4 +12,4 @@ class Post(db.Model):
     updated_on = db.Column(db.DateTime(), default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def __repr__(self):
-	return "<{}:{}>".format(self.id,  self.title[:10])
+        return "<Post:{}>".format(self.id, self.title[:10])
