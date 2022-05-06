@@ -17,6 +17,8 @@ class BaseConfig:
 
 class DevelopementConfig(BaseConfig):
     DEBUG = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ECHO = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEVELOPMENT_DATABASE_URI') or \
         'postgresql+psycopg2://postgres:EGORletov2312@localhost/my_db'
 
