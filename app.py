@@ -1,23 +1,381 @@
 import sys
+import typing
 from config.config import DevelopementConfig
 from flask import Flask, jsonify, request
-from data.Dbclasses import *
+#from data.Dbclasses import *
 from flask_sqlalchemy import SQLAlchemy
-
 
 
 app = Flask(__name__)
 app.debug = True
-app.config.from_object(DevelopementConfig)
-'''
+#app.config.from_object(DevelopementConfig)
+
 app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql+psycopg2://postgres:EGORletov2312@localhost/my_db'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SQLALCHEMY_ECHO'] = True
-'''
+
+
 
 db = SQLAlchemy(app)
 
 
+
+class Topic(db.Model):
+    __tablename__ = 'topic'
+    id = db.Column(db.Integer(), primary_key=True)
+    value = db.Column(db.String(255), nullable=False)
+    topic = db.relationship('Subtopic', backref='subtopic_topics',
+                            primaryjoin="and_(Topic.id == foreign(Subtopic.topicid))",
+                            )
+
+    def __init__(self, value):
+        self.value = value
+    def _repr(self, **fields: typing.Dict[str, typing.Any]) -> str:
+        '''
+        Helper for __repr__
+        '''
+        field_strings = []
+        at_least_one_attached_attribute = False
+        for key, field in fields.items():
+            try:
+                field_strings.append(f'{key}={field!r}')
+            except SQLAlchemy.orm.exc.DetachedInstanceError:
+                field_strings.append(f'{key}=DetachedInstanceError')
+            else:
+                at_least_one_attached_attribute = True
+        if at_least_one_attached_attribute:
+            return f"<{self.__class__.__name__}({','.join(field_strings)})>"
+        return f"<{self.__class__.__name__} {id(self)}>"
+    #def __repr__(self):
+        #return '"Topic": %r'   % self.value
+    def __repr__(self):
+        return self._repr(id=self.id, value=self.value)
+
+class Subtopic(db.Model):
+    __tablename__ = 'subtopic'
+    id = db.Column(db.Integer(), primary_key=True)
+    topicid = db.Column(db.Integer(), db.ForeignKey('topic.id'), nullable=False)
+    value = db.Column(db.String(255), nullable=False)
+    question = db.relationship('Question', backref='question_topics',
+                            primaryjoin="and_(Subtopic.id == foreign(Question.subtopicid))",
+                            )
+
+    def __init__(self, topic, value):
+        self.topicid = topic
+        self.value = value
+    def _repr(self, **fields: typing.Dict[str, typing.Any]) -> str:
+        '''
+        Helper for __repr__
+        '''
+        field_strings = []
+        at_least_one_attached_attribute = False
+        for key, field in fields.items():
+            try:
+                field_strings.append(f'{key}={field!r}')
+            except SQLAlchemy.orm.exc.DetachedInstanceError:
+                field_strings.append(f'{key}=DetachedInstanceError')
+            else:
+                at_least_one_attached_attribute = True
+        if at_least_one_attached_attribute:
+            return f"<{self.__class__.__name__}({','.join(field_strings)})>"
+        return f"<{self.__class__.__name__} {id(self)}>"
+    def __repr__(self):
+        return self._repr(id=self.id, topicid=self.topicid, value=self.value)
+
+class Question(db.Model):
+    __tablename__ = 'question'
+    id = db.Column(db.Integer(), primary_key=True)
+    subtopicid = db.Column(db.Integer(), db.ForeignKey('subtopic.id'), nullable=False)
+    value = db.Column(db.String(255), nullable=False)
+    Questionincr = db.relationship('Questionincr', backref='question_questionincr',
+                            primaryjoin="and_(Question.id == foreign(Questionincr.questionid))"
+                            )
+    controller = db.relationship('ControllerAnswer', backref='Controller_question',
+                            primaryjoin="and_(Question.id == foreign(ControllerAnswer.questionid))"
+                            )
+
+    def __init__(self,subtopicId,value):
+        self.subtopicid = subtopicId
+        self.value = value
+
+    def _repr(self, **fields: typing.Dict[str, typing.Any]) -> str:
+        '''
+        Helper for __repr__
+        '''
+        field_strings = []
+        at_least_one_attached_attribute = False
+        for key, field in fields.items():
+            try:
+                field_strings.append(f'{key}={field!r}')
+            except SQLAlchemy.orm.exc.DetachedInstanceError:
+                field_strings.append(f'{key}=DetachedInstanceError')
+            else:
+                at_least_one_attached_attribute = True
+        if at_least_one_attached_attribute:
+            return f"<{self.__class__.__name__}({','.join(field_strings)})>"
+        return f"<{self.__class__.__name__} {id(self)}>"
+
+    def __repr__(self):
+        return self._repr(id=self.id, subtopicid=self.subtopicid, answerid=self.answerid, value=self.value)
+
+
+class Answer(db.Model):
+    __tablename__ = 'answer'
+    id = db.Column(db.Integer(), primary_key=True)
+    value = db.Column(db.Text(), nullable=False)
+    controller = db.relationship('ControllerAnswer', backref='Controller_answer',
+                            primaryjoin="and_(Answer.id == foreign(ControllerAnswer.answerid))"
+                            )
+    def __init__(self,value):
+        self.value = value
+
+    def _repr(self, **fields: typing.Dict[str, typing.Any]) -> str:
+        '''
+        Helper for __repr__
+        '''
+        field_strings = []
+        at_least_one_attached_attribute = False
+        for key, field in fields.items():
+            try:
+                field_strings.append(f'{key}={field!r}')
+            except SQLAlchemy.orm.exc.DetachedInstanceError:
+                field_strings.append(f'{key}=DetachedInstanceError')
+            else:
+                at_least_one_attached_attribute = True
+        if at_least_one_attached_attribute:
+            return f"<{self.__class__.__name__}({','.join(field_strings)})>"
+        return f"<{self.__class__.__name__} {id(self)}>"
+    def __repr__(self):
+        return self._repr(id=self.id, value=self.value)
+
+
+class Questionincr(db.Model):
+    __tablename__='questionincr'
+    id = db.Column(db.Integer(), primary_key=True)
+    value = db.Column(db.String(255), nullable=False)
+    questionid = db.Column(db.Integer(), db.ForeignKey('question.id'), nullable=False)
+
+
+    def __init__(self,value,questionId):
+        self.value = value
+        self.questionid = questionId
+
+    def _repr(self, **fields: typing.Dict[str, typing.Any]) -> str:
+        '''
+        Helper for __repr__
+        '''
+        field_strings = []
+        at_least_one_attached_attribute = False
+        for key, field in fields.items():
+            try:
+                field_strings.append(f'{key}={field!r}')
+            except SQLAlchemy.orm.exc.DetachedInstanceError:
+                field_strings.append(f'{key}=DetachedInstanceError')
+            else:
+                at_least_one_attached_attribute = True
+        if at_least_one_attached_attribute:
+            return f"<{self.__class__.__name__}({','.join(field_strings)})>"
+        return f"<{self.__class__.__name__} {id(self)}>"
+
+    def __repr__(self):
+        return self._repr(id=self.id, questionid=self.questionid, value=self.value)
+
+class Nationality(db.Model):
+    __tablename__="nationality"
+    id = db.Column(db.Integer(), primary_key=True)
+    value = db.Column(db.String(255), nullable=False)
+    controller = db.relationship('ControllerAnswer', backref='Controller_Nationality',
+                            primaryjoin="and_(Nationality.id == foreign(ControllerAnswer.nationality))"
+                            )
+    def _repr(self, **fields: typing.Dict[str, typing.Any]) -> str:
+        '''
+        Helper for __repr__
+        '''
+        field_strings = []
+        at_least_one_attached_attribute = False
+        for key, field in fields.items():
+            try:
+                field_strings.append(f'{key}={field!r}')
+            except SQLAlchemy.orm.exc.DetachedInstanceError:
+                field_strings.append(f'{key}=DetachedInstanceError')
+            else:
+                at_least_one_attached_attribute = True
+        if at_least_one_attached_attribute:
+            return f"<{self.__class__.__name__}({','.join(field_strings)})>"
+        return f"<{self.__class__.__name__} {id(self)}>"
+
+    def __repr__(self):
+        return self._repr(id=self.id, value=self.value)
+
+class OldEducation(db.Model):
+    __tablename__="education"
+    id = db.Column(db.Integer(), primary_key=True)
+    value = db.Column(db.String(255), nullable=False)
+    controller = db.relationship('ControllerAnswer', backref='Controller_oldeducation',
+                            primaryjoin="and_(OldEducation.id == foreign(ControllerAnswer.oldeducation))"
+                            )
+    def _repr(self, **fields: typing.Dict[str, typing.Any]) -> str:
+        '''
+        Helper for __repr__
+        '''
+        field_strings = []
+        at_least_one_attached_attribute = False
+        for key, field in fields.items():
+            try:
+                field_strings.append(f'{key}={field!r}')
+            except SQLAlchemy.orm.exc.DetachedInstanceError:
+                field_strings.append(f'{key}=DetachedInstanceError')
+            else:
+                at_least_one_attached_attribute = True
+        if at_least_one_attached_attribute:
+            return f"<{self.__class__.__name__}({','.join(field_strings)})>"
+        return f"<{self.__class__.__name__} {id(self)}>"
+
+    def __repr__(self):
+        return self._repr(id=self.id, value=self.value)
+
+class Direction(db.Model):
+    __tablename__="direction"
+    id = db.Column(db.Integer(), primary_key=True)
+    value = db.Column(db.String(255), nullable=False)
+    controller = db.relationship('ControllerAnswer', backref='Controller_Direction',
+                            primaryjoin="and_(Direction.id == foreign(ControllerAnswer.direction))"
+                            )
+    def _repr(self, **fields: typing.Dict[str, typing.Any]) -> str:
+        '''
+        Helper for __repr__
+        '''
+        field_strings = []
+        at_least_one_attached_attribute = False
+        for key, field in fields.items():
+            try:
+                field_strings.append(f'{key}={field!r}')
+            except SQLAlchemy.orm.exc.DetachedInstanceError:
+                field_strings.append(f'{key}=DetachedInstanceError')
+            else:
+                at_least_one_attached_attribute = True
+        if at_least_one_attached_attribute:
+            return f"<{self.__class__.__name__}({','.join(field_strings)})>"
+        return f"<{self.__class__.__name__} {id(self)}>"
+
+    def __repr__(self):
+        return self._repr(id=self.id, value=self.value)
+
+class Resthelth(db.Model):
+    __tablename__="resthelth"
+    id = db.Column(db.Integer(), primary_key=True)
+    value = db.Column(db.String(255), nullable=False)
+    controller = db.relationship('ControllerAnswer', backref='Controller_Resthelth',
+                            primaryjoin="and_(Resthelth.id == foreign(ControllerAnswer.resthelth))"
+                            )
+    def _repr(self, **fields: typing.Dict[str, typing.Any]) -> str:
+        '''
+        Helper for __repr__
+        '''
+        field_strings = []
+        at_least_one_attached_attribute = False
+        for key, field in fields.items():
+            try:
+                field_strings.append(f'{key}={field!r}')
+            except SQLAlchemy.orm.exc.DetachedInstanceError:
+                field_strings.append(f'{key}=DetachedInstanceError')
+            else:
+                at_least_one_attached_attribute = True
+        if at_least_one_attached_attribute:
+            return f"<{self.__class__.__name__}({','.join(field_strings)})>"
+        return f"<{self.__class__.__name__} {id(self)}>"
+
+    def __repr__(self):
+        return self._repr(id=self.id, value=self.value)
+
+
+class Privileges(db.Model):
+    __tablename__="privileges"
+    id = db.Column(db.Integer(), primary_key=True)
+    value = db.Column(db.String(255), nullable=False)
+    controller = db.relationship('ControllerAnswer', backref='Controller_priv',
+                            primaryjoin="and_(Privileges.id == foreign(ControllerAnswer.privileges))"
+                            )
+    def _repr(self, **fields: typing.Dict[str, typing.Any]) -> str:
+        '''
+        Helper for __repr__
+        '''
+        field_strings = []
+        at_least_one_attached_attribute = False
+        for key, field in fields.items():
+            try:
+                field_strings.append(f'{key}={field!r}')
+            except SQLAlchemy.orm.exc.DetachedInstanceError:
+                field_strings.append(f'{key}=DetachedInstanceError')
+            else:
+                at_least_one_attached_attribute = True
+        if at_least_one_attached_attribute:
+            return f"<{self.__class__.__name__}({','.join(field_strings)})>"
+        return f"<{self.__class__.__name__} {id(self)}>"
+
+    def __repr__(self):
+        return self._repr(id=self.id, value=self.value)
+
+class Level(db.Model):
+    __tablename__="level"
+    id = db.Column(db.Integer(), primary_key=True)
+    value = db.Column(db.String(255), nullable=False)
+    controller = db.relationship('ControllerAnswer', backref='Controller_level',
+                            primaryjoin="and_(Level.id == foreign(ControllerAnswer.level))"
+                            )
+    def _repr(self, **fields: typing.Dict[str, typing.Any]) -> str:
+        '''
+        Helper for __repr__
+        '''
+        field_strings = []
+        at_least_one_attached_attribute = False
+        for key, field in fields.items():
+            try:
+                field_strings.append(f'{key}={field!r}')
+            except SQLAlchemy.orm.exc.DetachedInstanceError:
+                field_strings.append(f'{key}=DetachedInstanceError')
+            else:
+                at_least_one_attached_attribute = True
+        if at_least_one_attached_attribute:
+            return f"<{self.__class__.__name__}({','.join(field_strings)})>"
+        return f"<{self.__class__.__name__} {id(self)}>"
+
+    def __repr__(self):
+        return self._repr(id=self.id, value=self.value)
+
+class ControllerAnswer(db.Model):
+    __tablename__ = 'controller'
+    id = db.Column(db.Integer(), primary_key=True)
+    nationality = db.Column(db.Integer(), db.ForeignKey('nationality.id'), nullable=True)
+    oldeducation = db.Column(db.Integer(),  db.ForeignKey('education.id'), nullable=True)
+    direction = db.Column(db.Integer(),db.ForeignKey('direction.id'), nullable=True)
+    resthelth = db.Column(db.Integer(),db.ForeignKey('resthelth.id'), nullable=True)
+    privileges = db.Column(db.Integer(),db.ForeignKey('privileges.id'), nullable=True)
+    level = db.Column(db.Integer(),db.ForeignKey('level.id'), nullable=True)
+    answerid = db.Column(db.Integer(), db.ForeignKey('answer.id'), nullable=False)
+    questionid = db.Column(db.Integer(), db.ForeignKey('question.id'), nullable=False)
+
+    def _repr(self, **fields: typing.Dict[str, typing.Any]) -> str:
+        '''
+        Helper for __repr__
+        '''
+        field_strings = []
+        at_least_one_attached_attribute = False
+        for key, field in fields.items():
+            try:
+                field_strings.append(f'{key}={field!r}')
+            except SQLAlchemy.orm.exc.DetachedInstanceError:
+                field_strings.append(f'{key}=DetachedInstanceError')
+            else:
+                at_least_one_attached_attribute = True
+        if at_least_one_attached_attribute:
+            return f"<{self.__class__.__name__}({','.join(field_strings)})>"
+        return f"<{self.__class__.__name__} {id(self)}>"
+
+    def __repr__(self):
+        return self._repr(id=self.id, nationality=self.nationality, oldeducation=self.oldeducation, direction=self.direction,
+                          resthelth=self.resthelth, privileges=self.privileges, level=self.level, answerid=self.answerid,
+                          questionid = self.questionid)
 
 db.create_all()
 
@@ -129,22 +487,22 @@ def InitSubtopic():
 
 
 def InitQuestion():
-    question = Question(1,1,'До какого числа нужно подать документы?')
+    question = Question(1,'До какого числа нужно подать документы?')
     db.session.add(question)
     db.session.commit()
 
-    question = Question(1,2,'Как подать документы через сайт?')
+    question = Question(1,'Как подать документы через сайт?')
     db.session.add(question)
     db.session.commit()
 
-    question = Question(1,3,'Как подать документы лично?')
+    question = Question(1,'Как подать документы лично?')
     db.session.add(question)
     db.session.commit()
 
-    question = Question(1,4,'Как подать документы по почте?')
+    question = Question(1,'Как подать документы по почте?')
     db.session.add(question)
     db.session.commit()
-
+    '''
     question = Question(1,5,'Как подать документы через Госуслуги?')
     db.session.add(question)
     db.session.commit()
@@ -629,7 +987,7 @@ def InitQuestion():
     question = Question(18,125,'Могу ли я получить комнату на время ВИ?')
     db.session.add(question)
     db.session.commit()
-
+    '''
 def InitAnswer():
     answer = Answer('Если у вас есть результаты ЕГЭ, то с 20-го июня до 29 июля, если вы будете сдавать экзамены - до 17-го июля')
     db.session.add(answer)
@@ -1151,13 +1509,88 @@ def InitAnswer():
     db.session.add(answer)
     db.session.commit()
 
+
+def InitTmp():
+    nat = Nationality(value ="РФ")
+    db.session.add(nat)
+    db.session.commit()
+    nat = Nationality(value ="СНГ")
+    db.session.add(nat)
+    db.session.commit()
+    nat = Nationality(value ="Другие")
+    db.session.add(nat)
+    db.session.commit()
+
+    ed = OldEducation(value="Школа")
+    db.session.add(ed)
+    db.session.commit()
+    ed = OldEducation(value="Колледж")
+    db.session.add(ed)
+    db.session.commit()
+    ed = OldEducation(value="Вуз")
+    db.session.add(ed)
+    db.session.commit()
+
+    lv = Direction(value = 'очная')
+    db.session.add(lv)
+    db.session.commit()
+    lv = Direction(value = 'заочная')
+    db.session.add(lv)
+    db.session.commit()
+
+    lv = Resthelth(value='Есть')
+    db.session.add(lv)
+    db.session.commit()
+    lv = Resthelth(value='Нет')
+    db.session.add(lv)
+    db.session.commit()
+
+
+    pr = Privileges(value='Есть')
+    db.session.add(pr)
+    db.session.commit()
+    pr = Privileges(value='Нет')
+    db.session.add(pr)
+    db.session.commit()
+
+    lv = Level(value='Бакалавриат')
+    db.session.add(lv)
+    db.session.commit()
+    lv = Level(value='Магистртура')
+    db.session.add(lv)
+    db.session.commit()
+    lv = Level(value='Аспирантура')
+    db.session.add(lv)
+    db.session.commit()
+    lv = Level(value='Колледж')
+    db.session.add(lv)
+    db.session.commit()
+
 @app.route('/')
 def index():
-    #InitAnswer()
     #InitTopic()
     #InitSubtopic()
+    #InitAnswer()
     #InitQuestion()
+    #InitTmp()
+    cntr = ControllerAnswer(nationality = 1,
+                            oldeducation=3,direction=1,level=2,questionid=1, answerid=126)
+    db.session.add(cntr)
+    db.session.commit()
     return ("Hello world!")
+
+@app.route('/setIncr')
+def setIncr():
+    try:
+        json = request.json
+        print(json['value'], file = sys.stderr)
+        print(json['questionId'], file=sys.stderr)
+        incr = Questionincr(json['value'], json['questionId'])
+        db.session.add(incr)
+        db.session.commit()
+        return jsonify(ok=200)
+    except:
+        return jsonify(error=400)
 
 @app.route('/getTopics')
 def getTopics():
@@ -1305,11 +1738,29 @@ def getAnswer():
     try:
         json = request.json
         que = json['question']
+        params = json['data']
+        #params = {'nationality':1,'oldeducation':3,'direction':1, 'level':2}
+        print(params, file=sys.stderr)
 
-        data = db.session.query(Answer, Question).filter((Question.value==que) &(Question.answerid == Answer.id)).all()
+
+        question = db.session.query(Question).filter(Question.value == que).all()
+        if len(question) == 0:
+             question = db.session.query(Questionincr).filter(Questionincr.value == que).all()
+        questionId = question[0].questionid
+        print(questionId, file=sys.stderr)
+        query = db.session.query(ControllerAnswer, Nationality, Answer)
+
+
+        for attr,value in params.items():
+            query = query.filter(getattr(ControllerAnswer,attr)==value)
+
+        data = query.filter(Nationality.id == ControllerAnswer.nationality).filter(ControllerAnswer.questionid==questionId)\
+            .filter(ControllerAnswer.answerid == Answer.id).all()
+        print(data, file=sys.stderr)
+
         res = []
         for el in data:
-            tmp = {"id":el.Answer.id, "question": el.Question.value, "answer":el.Answer.value}
+            tmp = {"id":el.ControllerAnswer.id, "nationality": el.Nationality.value, "answer":el.Answer.value}
             res.append(tmp)
 
         return jsonify(res)
