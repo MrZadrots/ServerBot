@@ -1681,17 +1681,33 @@ def InitNewAnswer():
     ans = Answer("Для того, чтобы внести какие-либо измнения в заявление Вам необходимо зайти в личный кабинет поступающего и указать, что именно нужно изменить в личных сообщения приемной комиссии. Напоминаем, что если Вы подавали документы очно, то логин и пароль от вашего личного кабинета указан в расписке. ")
     db.session.add(ans)
     db.session.commit()
-@app.route('/')
-def index():
-    #InitTopic()
-    #InitSubtopic()
-    #InitAnswer()
-    #InitQuestion()
-    #InitTmp()
-    cntr = ControllerAnswer(nationality = 1,
-                            oldeducation=3,direction=1,level=2,questionid=1, answerid=126)
+
+
+    cntr = ControllerAnswer(questionid=1,answerid=1)
     db.session.add(cntr)
     db.session.commit()
+    cntr = ControllerAnswer(questionid=2,answerid=2)
+    db.session.add(cntr)
+    db.session.commit()
+    cntr = ControllerAnswer(questionid=3,answerid=3)
+    db.session.add(cntr)
+    db.session.commit()
+    cntr = ControllerAnswer(questionid=4,answerid=4)
+    db.session.add(cntr)
+    db.session.commit()
+    cntr = ControllerAnswer(questionid=5,answerid=5)
+    db.session.add(cntr)
+    db.session.commit()
+
+@app.route('/')
+def index():
+    InitTopic()
+    InitSubtopic()
+    InitAnswer()
+    InitQuestion()
+    InitTmp()
+    InitIncr()
+    InitNewAnswer()
     return ("Hello world!")
 
 @app.route('/setIncr')
