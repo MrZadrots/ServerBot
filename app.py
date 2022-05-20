@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.debug = True
 #app.config.from_object(DevelopementConfig)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql+psycopg2://postgres:EGORletov2312@localhost/my_db'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql+psycopg2://postgres:pass@localhost/my_db'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
