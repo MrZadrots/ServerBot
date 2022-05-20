@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.debug = True
 #app.config.from_object(DevelopementConfig)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql+psycopg2://postgres:pass@localhost/my_db'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql+psycopg2://postgres:EGORletov2312@localhost/my_db'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
@@ -1870,27 +1870,38 @@ def getAnswer():
         que = json['question']
         params = json['data']
         #params = {'nationality':1,'oldeducation':3,'direction':1, 'level':2}
-        print(params, file=sys.stderr)
+        #print(params, file=sys.stderr)
 
 
         question = db.session.query(Question).filter(Question.value == que).all()
+        print(question[0].id, file=sys.stderr)
+        print(question[0].value, file=sys.stderr)
+
+        """"
         if len(question) == 0:
              question = db.session.query(Questionincr).filter(Questionincr.value == que).all()
-        questionId = question[0].questionid
-        print(questionId, file=sys.stderr)
-        query = db.session.query(ControllerAnswer, Nationality, Answer)
+        
+        """
+        questionId = question[0].id
+
+
+
+        query = db.session.query(ControllerAnswer, Answer)
 
 
         for attr,value in params.items():
+            print("adasdasd", file=sys.stderr)
             query = query.filter(getattr(ControllerAnswer,attr)==value)
-
+        """
         data = query.filter(Nationality.id == ControllerAnswer.nationality).filter(ControllerAnswer.questionid==questionId)\
             .filter(ControllerAnswer.answerid == Answer.id).all()
         print(data, file=sys.stderr)
-
+        """
+        data = query.filter(ControllerAnswer.answerid == Answer.id).filter(ControllerAnswer.questionid==questionId).all()
         res = []
+        print(data, file=sys.stderr)
         for el in data:
-            tmp = {"id":el.ControllerAnswer.id, "nationality": el.Nationality.value, "answer":el.Answer.value}
+            tmp = {"id": el.ControllerAnswer.id,  "answer": el.Answer.value}
             res.append(tmp)
 
         return jsonify(res)
