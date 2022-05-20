@@ -419,7 +419,7 @@ def InitSubtopic():
     db.session.add(subtopic1)
     db.session.commit()
 
-    subtopic1 = Subtopic(1, "Заключить договор на обучение по контракту (или просто заключить договор)")
+    subtopic1 = Subtopic(1, "Заключить договор на обучение по контракту")
     db.session.add(subtopic1)
     db.session.commit()
 
@@ -440,7 +440,7 @@ def InitSubtopic():
     db.session.add(subtopic1)
     db.session.commit()
 
-    subtopic1 = Subtopic(2, "Заселение в общежитие (а сюда ли эту подгруппу?)")
+    subtopic1 = Subtopic(2, "Заселение в общежитие")
     db.session.add(subtopic1)
     db.session.commit()
 
@@ -487,10 +487,6 @@ def InitSubtopic():
 
 
 def InitQuestion():
-    question = Question(1,'До какого числа нужно подать документы?')
-    db.session.add(question)
-    db.session.commit()
-
     question = Question(1,'Как подать документы через сайт?')
     db.session.add(question)
     db.session.commit()
@@ -502,7 +498,7 @@ def InitQuestion():
     question = Question(1,'Как подать документы по почте?')
     db.session.add(question)
     db.session.commit()
-    '''
+
     question = Question(1,5,'Как подать документы через Госуслуги?')
     db.session.add(question)
     db.session.commit()
@@ -510,7 +506,7 @@ def InitQuestion():
     question = Question(1,6,'Как изменить поданное заявление?')
     db.session.add(question)
     db.session.commit()
-
+    '''
     question = Question(2,7,'Какие документы нужны для поступления по общему конкурсу?')
     db.session.add(question)
     db.session.commit()
@@ -1566,6 +1562,125 @@ def InitTmp():
     db.session.add(lv)
     db.session.commit()
 
+def InitIncr():
+    tmp = Questionincr("Последний срок подачи документов", 1)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Последний срок подачи заявления", 1)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Когда нужно подать документы", 1)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Когда подавать заявление", 1)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Когда подать документы", 1)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Когда подать заявление", 1)
+    db.session.add(tmp)
+    db.session.commit()
+
+
+    tmp = Questionincr("Подать в электронном виде",2)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Подать в цифровом виде",2)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Подать документы в электронном виде",2)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Подать заявление в цифровом виде",2)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Подать заявление на сайте",2)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Можно подать заявление на сайте",2)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Можно подать документы на сайте",2)
+    db.session.add(tmp)
+    db.session.commit()
+
+    tmp = Questionincr("Подать заявление лично",3)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Подать заявление в приемной комиссии",3)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Подать заявление в вузе",3)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Подать документы лично",3)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Подать документы в приемной комиссии",3)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Подать документы в вузе",3)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Приехать подать документы",3)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Приехать подать заявление",3)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Прийти подать документы",3)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Прийти подать заявление",3)
+    db.session.add(tmp)
+    db.session.commit()
+
+
+    tmp = Questionincr("Подать документы по почте",4)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Подать заявление по почте",4)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Отправить документы по почте",4)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("Отправить заявление по почте",4)
+    db.session.add(tmp)
+    db.session.commit()
+
+    tmp = Questionincr("госуслуги",5)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("gosuslugi",5)
+    db.session.add(tmp)
+    db.session.commit()
+    tmp = Questionincr("ЕПГУ",5)
+    db.session.add(tmp)
+    db.session.commit()
+
+def InitNewAnswer():
+    ans = Answer("Вам нужно зарегистрироваться на https://ciu.nstu.ru/enrollee_account/registration , перейти по ссылке полученной на адрес электронной почты, заполнить анкету, распечатать ее и приложить сканы анкеты (заявления) и всех необходимых документов")
+    db.session.add(ans)
+    db.session.commit()
+
+    ans = Answer("Прийти по адресу пр. Карла Маркса 20, корпус 2 (холл 1 этажа). Режим работы пн-пт с 10:00 до 17:00. С собой нужно иметь иметь все необходимые документы и их копии.")
+    db.session.add(ans)
+    db.session.commit()
+
+    ans = Answer("Скачать бланк заявления с сайта университета и отправить его почтой по адресу 630073, г. Новосибирск, пр. К. Маркса, 20.Однако, напоминаем Вам, что приоритетный способ подачи документов - онлайн через личный кабинет поступающего на nstu.ru либо через портал Госуслуг")
+    db.session.add(ans)
+    db.session.commit()
+
+    ans = Answer("Зарегистрироваться на портале gosuslugi.ru выбрать услугу …, и следовать инструкциям на портале. После того как ваше заявление будет рассмотрено вам придет уведомление и с портала Госуслуг и от НГТУ")
+    db.session.add(ans)
+    db.session.commit()
+
+
+    ans = Answer("Для того, чтобы внести какие-либо измнения в заявление Вам необходимо зайти в личный кабинет поступающего и указать, что именно нужно изменить в личных сообщения приемной комиссии. Напоминаем, что если Вы подавали документы очно, то логин и пароль от вашего личного кабинета указан в расписке. ")
+    db.session.add(ans)
+    db.session.commit()
 @app.route('/')
 def index():
     #InitTopic()
