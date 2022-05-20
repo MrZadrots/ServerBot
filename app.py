@@ -499,11 +499,11 @@ def InitQuestion():
     db.session.add(question)
     db.session.commit()
 
-    question = Question(1,5,'Как подать документы через Госуслуги?')
+    question = Question(1,'Как подать документы через Госуслуги?')
     db.session.add(question)
     db.session.commit()
 
-    question = Question(1,6,'Как изменить поданное заявление?')
+    question = Question(1,'Как изменить поданное заявление?')
     db.session.add(question)
     db.session.commit()
     '''
@@ -1703,7 +1703,6 @@ def InitNewAnswer():
 def index():
     InitTopic()
     InitSubtopic()
-    InitAnswer()
     InitQuestion()
     InitTmp()
     InitIncr()
