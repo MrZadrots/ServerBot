@@ -4,7 +4,7 @@ from config.config import DevelopementConfig
 from flask import Flask, jsonify, request
 #from data.Dbclasses import *
 from flask_sqlalchemy import SQLAlchemy
-
+from data.req import getData
 
 app = Flask(__name__)
 app.debug = True
@@ -2500,43 +2500,69 @@ def getAnswer():
     try:
         json = request.json
         que = json['question']
-        params = json['data']
+        params = getData(json['token'])
         #params = {'nationality':1,'oldeducation':3,'direction':1, 'level':2}
-        #print(params, file=sys.stderr)
+        print(params, file=sys.stderr)
 
 
         question = db.session.query(Question).filter(Question.value == que).all()
-        print(question[0].id, file=sys.stderr)
-        print(question[0].value, file=sys.stderr)
+        print("DJIKB", file=sys.stderr)
+        print(len(question), file=sys.stderr)
 
-        """"
-        if len(question) == 0:
-             question = db.session.query(Questionincr).filter(Questionincr.value == que).all()
-        
-        """
-        questionId = question[0].id
+        if len(question)==0:
+            print("Вошли", file=sys.stderr)
+            question = db.session.query(Questionincr).filter(Questionincr.value == que).all()
+            if len(question)==0:
+                print("Вошли2", file=sys.stderr)
+                return jsonify(msg='Такого вопроса нет')
+
+            questionId = question[0].questionid
+        else:
+            questionId = question[0].id
+        print("asdasda", file=sys.stderr)
+
+        #print(question, file=sys.stderr)
 
 
+        #print(questionId, file=sys.stderr)
+        query = db.session.query(ControllerAnswer, Answer, Nationality, Direction, OldEducation, Level, Privileges, Resthelth)
 
-        query = db.session.query(ControllerAnswer, Answer)
-
+        query = db.session.query(ControllerAnswer, Answer   )
 
         for attr,value in params.items():
-            print("adasdasd", file=sys.stderr)
-            query = query.filter(getattr(ControllerAnswer,attr)==value)
-        """
-        data = query.filter(Nationality.id == ControllerAnswer.nationality).filter(ControllerAnswer.questionid==questionId)\
+            print(attr, file=sys.stderr)
+
+            query = query.filter(((getattr(ControllerAnswer,attr)==value) & (getattr(ControllerAnswer,attr)!=None))|(getattr(ControllerAnswer,attr)==None))
+            print(query)
+        print("Добавили аттрибуты", file = sys.stderr)
+        '''
+        data = query.filter((Nationality.id == ControllerAnswer.Nationality | ControllerAnswer.Nationality == None))\
+            .filter((Direction.id == ControllerAnswer.Direction | ControllerAnswer.Direction == None))\
+            .filter((OldEducation.id == ControllerAnswer.OldEducation | ControllerAnswer.OldEducation == None))\
+            .filter((Level.id == ControllerAnswer.Level | ControllerAnswer.Level == None))\
+            .filter((Privileges.id == ControllerAnswer.Privileges | ControllerAnswer.Privileges == None))\
+            .filter((Resthelth.id == ControllerAnswer.Resthelth | ControllerAnswer.Resthelth == None))\
+            .filter(ControllerAnswer.questionid==questionId)\
             .filter(ControllerAnswer.answerid == Answer.id).all()
+            
+        '''
+        data = query.filter(ControllerAnswer.questionid==questionId)\
+            .filter(ControllerAnswer.answerid == Answer.id).all()
+
+        print("Выполнили запрос", file = sys.stderr)
         print(data, file=sys.stderr)
-        """
-        data = query.filter(ControllerAnswer.answerid == Answer.id).filter(ControllerAnswer.questionid==questionId).all()
+
+        #data = query.filter(ControllerAnswer.answerid == Answer.id).filter(ControllerAnswer.questionid==questionId).all()
         res = []
+        print("DATA", file=sys.stderr)
         print(data, file=sys.stderr)
         for el in data:
             tmp = {"id": el.ControllerAnswer.id,  "answer": el.Answer.value}
             res.append(tmp)
 
         return jsonify(res)
+        #else:
+           # return jsonify(msg = 'Ответа нет')
     except:
         return jsonify(error=401)
 
