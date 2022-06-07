@@ -2411,6 +2411,58 @@ def getSubtopics():
     except:
         return jsonify(error=401)
 
+
+@app.route('/getSubtopicOnTopic/<int:id>')
+def getSubtopicOnTopic(id):
+    try:
+        #data = Subtopic.query(Subtopic).filter(Topic.id == Subtopic.id).get(id)
+        result = db.session.query(Topic, Subtopic).filter((Subtopic.topicid == id) & (Topic.id == Subtopic.topicid)).all()
+        print(result, file=sys.stderr)
+
+        rad =[]
+        for el in result:
+            tmp = {"id": el.Subtopic.id, "topic":el.Topic.value, "value": el.Subtopic.value}
+            rad.append(tmp)
+        return jsonify(rad)
+
+    except:
+        return jsonify(error='401')
+
+
+@app.route('/getQuestionOnSubtopic/<int:id>')
+def getQuestionOnSubtopic(id):
+    try:
+        #rez = db.session.query(Subtopic, Question).filter((Subtopic.id == id) & (Subtopic.id == Question.subtopicid)).all()
+        rez = db.session.query(Question,Subtopic).filter((Subtopic.id== id) & (Question.subtopicid == Subtopic.id))
+        print(rez, file=sys.stderr)
+        result = []
+        for el in rez:
+            tmp = {"id": el.Question.id, "subtopic": el.Subtopic.value, "question": el.Question.value}
+            result.append(tmp)
+
+
+        return jsonify(result)
+
+    except:
+        return jsonify(error='401')
+
+
+@app.route('/getAnswerOnQuestion/<int:id>')
+def getAnswerOnQuestion(id):
+    try:
+        rez = db.session.query(ControllerAnswer,Answer).filter((ControllerAnswer.questionid == id)& \
+                                (Answer.id == ControllerAnswer.answerid)).all()
+        print(rez, file=sys.stderr)
+
+        rad = []
+        for el in rez:
+            tmp = {"id": el.Answer.id, "answer":el.Answer.value}
+            rad.append(tmp)
+        return jsonify(rad)
+    except:
+        return jsonify(error='401')
+
+
 @app.route('/getSubtopic/<int:id>')
 def getSubtopic(id):
     try:
