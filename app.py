@@ -116,7 +116,7 @@ class Question(db.Model):
         return f"<{self.__class__.__name__} {id(self)}>"
 
     def __repr__(self):
-        return self._repr(id=self.id, subtopicid=self.subtopicid, answerid=self.answerid, value=self.value)
+        return self._repr(id=self.id, subtopicid=self.subtopicid, value=self.value)
 
 
 class Answer(db.Model):
@@ -2450,13 +2450,17 @@ def getQuestionOnSubtopic(id):
 @app.route('/getAnswerOnQuestion/<int:id>')
 def getAnswerOnQuestion(id):
     try:
-        rez = db.session.query(ControllerAnswer,Answer).filter((ControllerAnswer.questionid == id)& \
-                                (Answer.id == ControllerAnswer.answerid)).all()
-        print(rez, file=sys.stderr)
+        rezQ = db.session.query(Question).filter(Question.id == id).all()
+        print(rezQ, file=sys.stderr)
+        rez = db.session.query(ControllerAnswer, Answer, Question).filter((ControllerAnswer.questionid == id)& \
+                            (Answer.id == ControllerAnswer.answerid) &\
+                            (Question.id == ControllerAnswer.questionid)).all()
+
+
 
         rad = []
         for el in rez:
-            tmp = {"id": el.Answer.id, "answer":el.Answer.value}
+            tmp = {"id": el.Answer.id, "question": el.Question.value, "answer":el.Answer.value}
             rad.append(tmp)
         return jsonify(rad)
     except:
