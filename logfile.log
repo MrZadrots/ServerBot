@@ -1,0 +1,34 @@
+INFO 2022-06-10 17:44:56,774 - select pg_catalog.version()
+INFO 2022-06-10 17:44:56,775 - [raw sql] {}
+INFO 2022-06-10 17:44:56,776 - select current_schema()
+INFO 2022-06-10 17:44:56,776 - [raw sql] {}
+INFO 2022-06-10 17:44:56,777 - show standard_conforming_strings
+INFO 2022-06-10 17:44:56,777 - [raw sql] {}
+INFO 2022-06-10 17:44:56,777 - BEGIN (implicit)
+INFO 2022-06-10 17:44:56,778 - select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+INFO 2022-06-10 17:44:56,778 - [generated in 0.00019s] {'name': 'topic'}
+INFO 2022-06-10 17:44:56,781 - select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+INFO 2022-06-10 17:44:56,781 - [cached since 0.002855s ago] {'name': 'subtopic'}
+INFO 2022-06-10 17:44:56,781 - select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+INFO 2022-06-10 17:44:56,782 - [cached since 0.003736s ago] {'name': 'question'}
+INFO 2022-06-10 17:44:56,782 - select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+INFO 2022-06-10 17:44:56,783 - [cached since 0.004746s ago] {'name': 'answer'}
+INFO 2022-06-10 17:44:56,783 - select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+INFO 2022-06-10 17:44:56,784 - [cached since 0.005698s ago] {'name': 'questionincr'}
+INFO 2022-06-10 17:44:56,784 - select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+INFO 2022-06-10 17:44:56,784 - [cached since 0.006531s ago] {'name': 'nationality'}
+INFO 2022-06-10 17:44:56,785 - select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+INFO 2022-06-10 17:44:56,785 - [cached since 0.007547s ago] {'name': 'education'}
+INFO 2022-06-10 17:44:56,786 - select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+INFO 2022-06-10 17:44:56,786 - [cached since 0.008234s ago] {'name': 'direction'}
+INFO 2022-06-10 17:44:56,787 - select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+INFO 2022-06-10 17:44:56,787 - [cached since 0.008842s ago] {'name': 'resthelth'}
+INFO 2022-06-10 17:44:56,787 - select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+INFO 2022-06-10 17:44:56,787 - [cached since 0.00943s ago] {'name': 'privileges'}
+INFO 2022-06-10 17:44:56,788 - select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+INFO 2022-06-10 17:44:56,788 - [cached since 0.01012s ago] {'name': 'level'}
+INFO 2022-06-10 17:44:56,788 - select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+INFO 2022-06-10 17:44:56,789 - [cached since 0.01076s ago] {'name': 'controller'}
+INFO 2022-06-10 17:44:56,789 - COMMIT
+WARNING 2022-06-10 17:44:56,809 -  * Debugger is active!
+INFO 2022-06-10 17:44:56,815 -  * Debugger PIN: 831-170-754

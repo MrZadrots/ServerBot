@@ -5,12 +5,15 @@ from flask import Flask, jsonify, request
 #from data.Dbclasses import *
 from flask_sqlalchemy import SQLAlchemy
 from data.req import getData
+from config.logger import createLogger
+
+
 
 app = Flask(__name__)
 app.debug = True
 #app.config.from_object(DevelopementConfig)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql+psycopg2://postgres:pass@localhost/my_db'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql+psycopg2://postgres:EGORletov2312@localhost/my_db'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
@@ -18,7 +21,7 @@ app.config['SQLALCHEMY_ECHO'] = True
 
 db = SQLAlchemy(app)
 
-
+logger = createLogger()
 
 class Topic(db.Model):
     __tablename__ = 'topic'
