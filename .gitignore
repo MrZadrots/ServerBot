@@ -1,0 +1,6 @@
+/serverbotenv
+serverbot.ini
+logfile.log
+/__pycache__
+/.git
+wsgi.py

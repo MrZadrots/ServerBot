@@ -5,7 +5,7 @@ from flask import Flask, jsonify, request
 #from data.Dbclasses import *
 from flask_sqlalchemy import SQLAlchemy
 from data.req import getData
-from config.logger import createLogger
+#from config.logger import createLogger
 
 
 
@@ -21,7 +21,7 @@ app.config['SQLALCHEMY_ECHO'] = True
 
 db = SQLAlchemy(app)
 
-logger = createLogger()
+#logger = createLogger()
 
 class Topic(db.Model):
     __tablename__ = 'topic'
