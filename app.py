@@ -13,7 +13,7 @@ app = Flask(__name__)
 app.debug = True
 #app.config.from_object(DevelopementConfig)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql+psycopg2://postgres:pass@localhost/my_db'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql+psycopg2://postgres:EGORletov2312@localhost/my_db'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
@@ -1562,6 +1562,10 @@ def InitNewAnswer():
     db.session.add(ans)
     db.session.commit()
 
+    ans = Answer("6 августа")
+    db.session.add(ans)
+    db.session.commit()
+
     ans = Answer("30 июля 2022 г.")
     db.session.add(ans)
     db.session.commit()
@@ -2263,10 +2267,6 @@ def InitNewAnswer():
     db.session.add(cntr)
     db.session.commit()
 
-    cntr = ControllerAnswer(questionid=95,answerid=95)
-    db.session.add(cntr)
-    db.session.commit()
-
     cntr = ControllerAnswer(questionid=106,answerid=106)
     db.session.add(cntr)
     db.session.commit()
@@ -2336,6 +2336,9 @@ def InitNewAnswer():
     db.session.commit()
 
     cntr = ControllerAnswer(questionid=123,answerid=123)
+    db.session.add(cntr)
+    db.session.commit()
+    cntr = ControllerAnswer(questionid=124,answerid=124)
     db.session.add(cntr)
     db.session.commit()
 
