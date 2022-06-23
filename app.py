@@ -819,7 +819,7 @@ def InitQuestion():
     db.session.add(question)
     db.session.commit()
 
-    question = Question(14, "Если я сдал(а) ЕГЭ, нужно ли мне сдавать ВИ? (возможно, дублирует следующей вопрос)")
+    question = Question(14, "Если я сдал(а) ЕГЭ, нужно ли мне сдавать ВИ?")
     db.session.add(question)
     db.session.commit()
 
@@ -1494,6 +1494,10 @@ def InitNewAnswer():
     db.session.add(ans)
     db.session.commit()
 
+    ans = Answer("30 июля")
+    db.session.add(ans)
+    db.session.commit()
+
     ans = Answer("В момент подачи документов в личном кабинете поступающего необходимо поставить отметку о том, что Вы нуждаетесь в общежитии. При очной подаче документов — сообщить сотруднику приемной комиссии НГТУ. В случае вашего поступления в НГТУ, Вам придет уведомление о дате и порядке заселения.")
     db.session.add(ans)
     db.session.commit()
@@ -1559,10 +1563,6 @@ def InitNewAnswer():
     db.session.commit()
 
     ans = Answer("Да.")
-    db.session.add(ans)
-    db.session.commit()
-
-    ans = Answer("6 августа")
     db.session.add(ans)
     db.session.commit()
 
