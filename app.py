@@ -23,6 +23,37 @@ db = SQLAlchemy(app)
 
 #logger = createLogger()
 
+
+class Users(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer(),primary_key=True)
+    tgId = db.Column(db.Text(),nullable=False)
+    token = db.Column(db.Text(),nullable=False)
+    def __init__(self, tgId,token):
+        self.tgId = tgId
+        self.token = token
+
+
+    def _repr(self, **fields: typing.Dict[str, typing.Any]) -> str:
+        '''
+        Helper for __repr__
+        '''
+        field_strings = []
+        at_least_one_attached_attribute = False
+        for key, field in fields.items():
+            try:
+                field_strings.append(f'{key}={field!r}')
+            except SQLAlchemy.orm.exc.DetachedInstanceError:
+                field_strings.append(f'{key}=DetachedInstanceError')
+            else:
+                at_least_one_attached_attribute = True
+        if at_least_one_attached_attribute:
+            return f"<{self.__class__.__name__}({','.join(field_strings)})>"
+        return f"<{self.__class__.__name__} {id(self)}>"
+
+    def __repr__(self):
+        return self._repr(id=self.id, tgId=self.tgId, token= self.token)
+
 class Topic(db.Model):
     __tablename__ = 'topic'
     id = db.Column(db.Integer(), primary_key=True)
@@ -2568,71 +2599,138 @@ def getAnswer():
     try:
         json = request.json
         que = json['question']
-        params = getData(json['token'])
-        #params = {'nationality':1,'oldeducation':3,'direction':1, 'level':2}
-        print(params, file=sys.stderr)
+
+        if json['token'] != 'null':
+            params = getData(json['token'])
+            #params = {'nationality':1,'oldeducation':3,'direction':1, 'level':2}
+            print(params, file=sys.stderr)
 
 
-        question = db.session.query(Question).filter(Question.value == que).all()
-        print("DJIKB", file=sys.stderr)
-        print(len(question), file=sys.stderr)
+            question = db.session.query(Question).filter(Question.value == que).all()
+            print("DJIKB", file=sys.stderr)
+            print(len(question), file=sys.stderr)
 
-        if len(question)==0:
-            print("Вошли", file=sys.stderr)
-            question = db.session.query(Questionincr).filter(Questionincr.value == que).all()
             if len(question)==0:
-                print("Вошли2", file=sys.stderr)
-                return jsonify(msg='Такого вопроса нет')
+                print("Вошли", file=sys.stderr)
+                question = db.session.query(Questionincr).filter(Questionincr.value == que).all()
+                if len(question)==0:
+                    print("Вошли2", file=sys.stderr)
+                    return jsonify(msg='Такого вопроса нет')
 
-            questionId = question[0].questionid
+                questionId = question[0].questionid
+            else:
+                questionId = question[0].id
+            print("asdasda", file=sys.stderr)
+
+            #query = db.session.query(ControllerAnswer, Answer, Nationality, Direction, OldEducation, Level, Privileges, Resthelth)
+            query = db.session.query(ControllerAnswer, Answer)
+
+            for attr,value in params.items():
+                print(attr, file=sys.stderr)
+
+                query = query.filter(((getattr(ControllerAnswer,attr)==value) & (getattr(ControllerAnswer,attr)!=None))|(getattr(ControllerAnswer,attr)==None))
+                print(query)
+            print("Добавили аттрибуты", file = sys.stderr)
+
+            data = query.filter(ControllerAnswer.questionid==questionId)\
+                .filter(ControllerAnswer.answerid == Answer.id).all()
+
+            print("Выполнили запрос", file = sys.stderr)
+            print(data, file=sys.stderr)
+            res = []
+
+            if len(data) > 1:
+               for el in data:
+                    if el.ControllerAnswer.nationality!=None or el.ControllerAnswer.oldeducation!=None\
+                        or el.ControllerAnswer.direction!=None or  el.ControllerAnswer.resthelth!=None\
+                        or el.ControllerAnswer.privileges!=None or el.ControllerAnswer.level!=None:
+                            tmp = {"id": el.ControllerAnswer.id,  "answer": el.Answer.value}
+                            res.append(tmp)
+            else:
+                for el in data:
+                    tmp = {"id": el.ControllerAnswer.id,  "answer": el.Answer.value}
+                    res.append(tmp)
+
+            return jsonify(res)
+
+
         else:
-            questionId = question[0].id
-        print("asdasda", file=sys.stderr)
+            print("ELSE", file=sys.stderr)
+            question = db.session.query(Question).filter(Question.value == que).all()
+            print("DJIKB", file=sys.stderr)
+            print(len(question), file=sys.stderr)
 
-        #print(question, file=sys.stderr)
+            if len(question)==0:
+                print("Вошли", file=sys.stderr)
+                question = db.session.query(Questionincr).filter(Questionincr.value == que).all()
+                if len(question)==0:
+                    print("Вошли2", file=sys.stderr)
+                    return jsonify(msg='Такого вопроса нет')
 
+                questionId = question[0].questionid
+            else:
+                questionId = question[0].id
+            print("asdasda", file=sys.stderr)
+            data = db.session.query(ControllerAnswer, Answer)\
+                .filter(ControllerAnswer.nationality == None)\
+                .filter(ControllerAnswer.direction == None)\
+                .filter(ControllerAnswer.oldeducation == None)\
+                .filter(ControllerAnswer.level == None)\
+                .filter(ControllerAnswer.privileges == None)\
+                .filter(ControllerAnswer.resthelth == None)\
+                .filter(ControllerAnswer.answerid == Answer.id).filter(ControllerAnswer.questionid == questionId).all()
+            res = []
+            print("DATA", file=sys.stderr)
+            print(data, file=sys.stderr)
+            for el in data:
+                tmp = {"id": el.ControllerAnswer.id,  "answer": el.Answer.value}
+                res.append(tmp)
 
-        #print(questionId, file=sys.stderr)
-        query = db.session.query(ControllerAnswer, Answer, Nationality, Direction, OldEducation, Level, Privileges, Resthelth)
-
-        query = db.session.query(ControllerAnswer, Answer   )
-
-        for attr,value in params.items():
-            print(attr, file=sys.stderr)
-
-            query = query.filter(((getattr(ControllerAnswer,attr)==value) & (getattr(ControllerAnswer,attr)!=None))|(getattr(ControllerAnswer,attr)==None))
-            print(query)
-        print("Добавили аттрибуты", file = sys.stderr)
-        '''
-        data = query.filter((Nationality.id == ControllerAnswer.Nationality | ControllerAnswer.Nationality == None))\
-            .filter((Direction.id == ControllerAnswer.Direction | ControllerAnswer.Direction == None))\
-            .filter((OldEducation.id == ControllerAnswer.OldEducation | ControllerAnswer.OldEducation == None))\
-            .filter((Level.id == ControllerAnswer.Level | ControllerAnswer.Level == None))\
-            .filter((Privileges.id == ControllerAnswer.Privileges | ControllerAnswer.Privileges == None))\
-            .filter((Resthelth.id == ControllerAnswer.Resthelth | ControllerAnswer.Resthelth == None))\
-            .filter(ControllerAnswer.questionid==questionId)\
-            .filter(ControllerAnswer.answerid == Answer.id).all()
-            
-        '''
-        data = query.filter(ControllerAnswer.questionid==questionId)\
-            .filter(ControllerAnswer.answerid == Answer.id).all()
-
-        print("Выполнили запрос", file = sys.stderr)
-        print(data, file=sys.stderr)
-
-        #data = query.filter(ControllerAnswer.answerid == Answer.id).filter(ControllerAnswer.questionid==questionId).all()
-        res = []
-        print("DATA", file=sys.stderr)
-        print(data, file=sys.stderr)
-        for el in data:
-            tmp = {"id": el.ControllerAnswer.id,  "answer": el.Answer.value}
-            res.append(tmp)
-
-        return jsonify(res)
+            return jsonify(res)
         #else:
            # return jsonify(msg = 'Ответа нет')
     except:
         return jsonify(error=401)
 
+
+@app.route('/addUser')
+def addUser():
+    try:
+        json = request.json
+        tgId = str(json['tgId'])
+        token = json['token']
+        print(json, file=sys.stderr)
+        checkUser = db.session.query(Users).filter(Users.tgId==tgId).all()
+        print(checkUser, file=sys.stderr)
+        if len(checkUser)==0:
+            newUser = Users(tgId,token)
+            db.session.add(newUser)
+            db.session.commit()
+            return jsonify(msg="Пользователь добавлен")
+        else:
+            return jsonify(msg="Такой пользователь уже есть")
+    except:
+        return jsonify(error=401), 401
+
+@app.route('/getUser')
+def getUser():
+    try:
+        json = request.json
+        tgId = str(json['tgId'])
+        print(tgId, file=sys.stderr)
+        data = db.session.query(Users).filter(Users.tgId==tgId).all()
+        print(data, file=sys.stderr)
+        if len(data) > 0:
+            print("data", file=sys.stderr)
+            rez = []
+            for el in data:
+                tmp = { "msg": el.token}
+                rez.append(tmp)
+            return jsonify(rez)
+        else:
+             return jsonify(msg="Такого пользователя нет")
+
+    except:
+         return jsonify(error=401), 401
 if __name__ == '__main__':
    app.run()
