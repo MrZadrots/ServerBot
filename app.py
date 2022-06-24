@@ -2728,7 +2728,8 @@ def getUser():
                 rez.append(tmp)
             return jsonify(rez)
         else:
-             return jsonify(msg="Такого пользователя нет")
+            rez = jsonify(msg="Такого пользователя нет")
+            return  rez, 201
 
     except:
          return jsonify(error=401), 401
