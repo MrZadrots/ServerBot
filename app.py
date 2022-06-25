@@ -581,11 +581,11 @@ def InitQuestion():
     db.session.add(question)
     db.session.commit()
 
-    question = Question(3, "Кто и как заключает договор? ")
+    question = Question(3, "Кто и как заключает договор?")
     db.session.add(question)
     db.session.commit()
 
-    question = Question(3, "Как можно оплатить (мат. Капитал, оплата онлайн, образовательный кредит)?")
+    question = Question(3, "Как можно оплатить (мат. Капитал, оплата онлайн, образовательный кредит?")
     db.session.add(question)
     db.session.commit()
 
@@ -681,23 +681,23 @@ def InitQuestion():
     db.session.add(question)
     db.session.commit()
 
-    question = Question(9, "Какие документы подавать при поступлении по «льготе»?")
+    question = Question(9, "Какие документы подавать при поступлении по льготе?")
     db.session.add(question)
     db.session.commit()
 
-    question = Question(9, "До какого числа необходимо подать документы «по льготе»?")
+    question = Question(9, "До какого числа необходимо подать документы по льготе?")
     db.session.add(question)
     db.session.commit()
 
-    question = Question(9, "Можно ли сдавать вступительные испытания по материалам ВУЗа, если я поступаю по «льготе»?")
+    question = Question(9, "Можно ли сдавать вступительные испытания по материалам ВУЗа, если я поступаю по льготе?")
     db.session.add(question)
     db.session.commit()
 
-    question = Question(9, "Какие минимальные баллы ЕГЭ нужны при поступлении «по льготе»?")
+    question = Question(9, "Какие минимальные баллы ЕГЭ нужны при поступлении по льготе?")
     db.session.add(question)
     db.session.commit()
 
-    question = Question(9, "Когда издается приказ о зачислении «по льготе»?")
+    question = Question(9, "Когда издается приказ о зачислении по льготе?")
     db.session.add(question)
     db.session.commit()
 
@@ -705,19 +705,19 @@ def InitQuestion():
     db.session.add(question)
     db.session.commit()
 
-    question = Question(9, "На какие направления действует «льготное право поступление»? (возможно, дублирует следующий вопрос)")
+    question = Question(9, "На какие направления действует льготное право поступление?)")
     db.session.add(question)
     db.session.commit()
 
-    question = Question(9, "На сколько направлений действует «льготное право поступление»?")
+    question = Question(9, "На сколько направлений действует льготное право поступление?")
     db.session.add(question)
     db.session.commit()
 
-    question = Question(10, "Кто может поступать «без вступительных испытаний»?")
+    question = Question(10, "Кто может поступать без вступительных испытаний?")
     db.session.add(question)
     db.session.commit()
 
-    question = Question(10, "До какого числа необходимо подать документы при поступлении «БВИ»?")
+    question = Question(10, "До какого числа необходимо подать документы при поступлении БВИ?")
     db.session.add(question)
     db.session.commit()
 
@@ -733,11 +733,11 @@ def InitQuestion():
     db.session.add(question)
     db.session.commit()
 
-    question = Question(10, "Когда издается приказ о зачислении «БВИ»?")
+    question = Question(10, "Когда издается приказ о зачислении БВИ?")
     db.session.add(question)
     db.session.commit()
 
-    question = Question(10, "На сколько направлений действует право поступление «БВИ»?")
+    question = Question(10, "На сколько направлений действует право поступление БВИ?")
     db.session.add(question)
     db.session.commit()
 
@@ -814,7 +814,7 @@ def InitQuestion():
     db.session.add(question)
     db.session.commit()
 
-    question = Question(13, "Сколько бюджетных и контарктых мест на напрвлениях?)")
+    question = Question(13, "Сколько бюджетных и контарктых мест на напрвлениях?")
     db.session.add(question)
     db.session.commit()
 
@@ -842,7 +842,7 @@ def InitQuestion():
     db.session.add(question)
     db.session.commit()
 
-    question = Question(14, "Где можно сдать ЕГЭ? (а точно нужен этот и следующий вопрос?)")
+    question = Question(14, "Где можно сдать ЕГЭ?")
     db.session.add(question)
     db.session.commit()
 
@@ -1388,7 +1388,7 @@ def InitNewAnswer():
     db.session.add(ans)
     db.session.commit()
 
-    ans = Answer("Зарегистрируйтесь на https://ciu.nstu.ru/enrollee_account/registration;Перейдите по ссылке в письме, полученном на адрес электронной почты;Заполните анкету и распечатайте ее;Прикрепите сканы подписанного заявления и всех необходимых для поступления документов.")
+    ans = Answer("Зарегистрируйтесь на https://ciu.nstu.ru/enrollee_account/registration. Перейдите по ссылке в письме, полученном на адрес электронной почты;Заполните анкету и распечатайте ее;Прикрепите сканы подписанного заявления и всех необходимых для поступления документов.")
     db.session.add(ans)
     db.session.commit()
 
@@ -1880,6 +1880,7 @@ def InitNewAnswer():
     ans = Answer("Абитуриент, предоставивший оригиналы документов в приемную комиссию НГТУ, может размещаться в общежитии НГТУ в период проведения приемной кампании. Стоимость проживания — 313 руб в сутки.")
     db.session.add(ans)
     db.session.commit()
+
 
 
     cntr = ControllerAnswer(questionid=1,answerid=1)
