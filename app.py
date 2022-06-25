@@ -814,7 +814,7 @@ def InitQuestion():
     db.session.add(question)
     db.session.commit()
 
-    question = Question(13, "Сколько бюджетных и контарктых мест на напрвлениях?")
+    question = Question(13, "Сколько бюджетных и контрактых мест на направлениях?")
     db.session.add(question)
     db.session.commit()
 
